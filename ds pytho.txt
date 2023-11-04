@@ -1,0 +1,95 @@
+import re
+
+# Fonction pour vérifier si l'e-mail est valide
+def is_valid_email(email):
+    pattern = r'^\S+@\S+\.\S+$'
+    return re.match(pattern, email)
+
+# Fonction pour vérifier si le mot de passe est valide
+def is_valid_password(password):
+    return any(char.isupper() for char in password) and \
+           any(char.islower() for char in password) and \
+           any(char.isdigit() for char in password) and \
+           any(not char.isalnum() for char in password) and \
+           len(password) >= 8
+
+# Fonction pour s'enregistrer
+def register():
+    email = input("Entrez votre e-mail : ")
+    password = input("Entrez votre mot de passe : ")
+
+    if is_valid_email(email) and is_valid_password(password):
+        with open("Enregistrement.txt", "a") as file:
+            file.write(f"{email}:{password}\n")
+        print("Enregistrement réussi.")
+    else:
+        print("L'e-mail ou le mot de passe ne respecte pas les critères.")
+
+# Fonction pour s'authentifier
+def authenticate():
+    email = input("Entrez votre e-mail : ")
+    password = input("Entrez votre mot de passe : ")
+
+    with open("Enregistrement.txt", "r") as file:
+        credentials = [line.strip().split(":") for line in file]
+
+    for cred in credentials:
+        if email == cred[0] and password == cred[1]:
+            print("Authentification réussie. Accès au menu principal.")
+            return True
+
+    print("Authentification échouée. Veuillez vous enregistrer.")
+    return False
+
+# Fonction pour afficher le menu principal
+def main_menu():
+    print("Menu principal :")
+    print("A- Jouer à la Roulette")
+    print("B- Décalage par CESAR")
+    choice = input("Choisissez une option (A/B) : ")
+    if choice == "A":
+        roulette_menu()
+    elif choice == "B":
+        caesar_menu()
+    else:
+        print("Option invalide.")
+
+# Fonction pour le menu de la roulette
+def roulette_menu():
+    print("Menu Roulette :")
+    print("a- Commencer à jouer")
+    print("b- Revenir au menu principal")
+    choice = input("Choisissez une option (a/b) : ")
+    if choice == "a":
+        print("Commencez à jouer à la roulette ici.")
+    elif choice == "b":
+        main_menu()
+    else:
+        print("Option invalide.")
+
+# Fonction pour le menu du chiffrement César
+def caesar_menu():
+    print("Menu Chiffrement César :")
+    print("a- Donnez un mot à chiffrer")
+    print("b- Revenir au menu principal")
+    choice = input("Choisissez une option (a/b) : ")
+    if choice == "a":
+        print("Donnez un mot à chiffrer ici.")
+    elif choice == "b":
+        main_menu()
+    else:
+        print("Option invalide.")
+
+# Programme principal
+while True:
+    print("1- Enregistrement")
+    print("2- Authentification")
+    choice = input("Choisissez une option (1/2) : ")
+
+    if choice == "1":
+        register()
+    elif choice == "2":
+        if authenticate():
+            main_menu()
+    else:
+        print("Option invalide.")
